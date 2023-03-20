@@ -35,4 +35,14 @@ public:
     virtual void Observe() = 0;
 };
 
+class FaceMeshInterface : public MediapipeInterface {
+public:
+    FaceMeshInterface() = default;
+    virtual ~FaceMeshInterface() = default;
+
+    using NormalizedLandmarkCallback = std::function<void(std::vector<NormalizedLandmarkList>& normalized_landmark_lists)>;
+    virtual void SetObserveCallback(const NormalizedLandmarkCallback& callback) = 0;
+    virtual void Observe() = 0;
+};
+
 #endif

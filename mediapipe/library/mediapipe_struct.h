@@ -74,4 +74,18 @@ struct Detection {
     int64_t timestamp_usec_ = 10;
 };
 
+struct Landmark {
+    float x_ = 0.F;
+    float y_ = 0.F;
+    float z_ = 0.F;
+    float visibility_ = 0.F;
+    float presence_ = 0.F;
+};
+
+using LandmarkList = std::vector<Landmark>;
+
+using NormalizedLandmark = Landmark;
+
+using NormalizedLandmarkList = std::vector<NormalizedLandmark>;
+
 #endif

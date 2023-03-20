@@ -25,7 +25,7 @@ void MediapipeLibrary::SetLogger(const std::shared_ptr<MediapipeLogger>& logger)
 
 void MediapipeLibrary::SetGraph(const std::string& path) {
     std::string graph_content;
-    mediapipe::file::GetContents(path, &graph_content);
+    static_cast<void>(mediapipe::file::GetContents(path, &graph_content));
     auto config = mediapipe::ParseTextProtoOrDie<mediapipe::CalculatorGraphConfig>(graph_content);
     auto status = graph_.Initialize(config);
     if (!status.ok()) {
@@ -44,7 +44,7 @@ void MediapipeLibrary::Preview() {
         preview_callback_(output_mat);
         return absl::OkStatus();
     };
-    graph_.ObserveOutputStream(OUTPUT_STREAM, mat_callback);
+    static_cast<void>(graph_.ObserveOutputStream(OUTPUT_STREAM, mat_callback));
 }
 
 void MediapipeLibrary::Start() {
@@ -66,8 +66,8 @@ void MediapipeLibrary::Detect(const cv::Mat& input) {
 }
 
 void MediapipeLibrary::Stop() {
-    graph_.CloseInputStream(INPUT_STREAM);
-    graph_.WaitUntilDone();
+    static_cast<void>(graph_.CloseInputStream(INPUT_STREAM));
+    static_cast<void>(graph_.WaitUntilDone());
 }
 
 FaceDetectLibrary::FaceDetectLibrary() {
@@ -135,7 +135,7 @@ void FaceDetectLibrary::Observe() {
         observe_callback_(ret);
         return absl::OkStatus();
     };
-    interface_->graph_.ObserveOutputStream("face_detections", packet_callback);
+    static_cast<void>(interface_->graph_.ObserveOutputStream("face_detections", packet_callback));
 }
 
 void FaceDetectLibrary::Start() {
@@ -147,5 +147,60 @@ void FaceDetectLibrary::Detect(const cv::Mat& frame) {
 }
 
 void FaceDetectLibrary::Stop() {
+    interface_->Stop();
+}
+
+FaceMeshLibrary::FaceMeshLibrary() {
+    interface_ = std::make_unique<MediapipeLibrary>();
+}
+
+void FaceMeshLibrary::SetLogger(const std::shared_ptr<MediapipeLogger>& logger) {
+    interface_->SetLogger(logger);
+}
+
+void FaceMeshLibrary::SetGraph(const std::string & path) {
+    interface_->SetGraph(path);
+}
+
+void FaceMeshLibrary::SetPreviewCallback(const MatCallback & callback) {
+    interface_->SetPreviewCallback(callback);
+}
+
+void FaceMeshLibrary::SetObserveCallback(const NormalizedLandmarkCallback& callback) {
+    observe_callback_ = callback;
+}
+
+void FaceMeshLibrary::Preview() {
+    interface_->Preview();
+}
+
+void FaceMeshLibrary::Observe() {
+    auto packet_callback = [&](const mediapipe::Packet& packet) {
+        auto& multi_face_landmarks = packet.Get<std::vector<mediapipe::NormalizedLandmarkList>>();
+        std::vector<NormalizedLandmarkList> ret;
+        for (const auto& face_landmarks : multi_face_landmarks) {
+            NormalizedLandmarkList normalized_landmark_list;
+            for(int i = 0; i< face_landmarks.landmark_size(); ++i) {
+                const auto& face_landmark = face_landmarks.landmark(i);
+                NormalizedLandmark normalized_landmark {face_landmark.x(), face_landmark.y(), face_landmark.z(), face_landmark.visibility(), face_landmark.presence()};
+                normalized_landmark_list.push_back(normalized_landmark);
+            }
+            ret.push_back(normalized_landmark_list);
+        }
+        observe_callback_(ret);
+        return absl::OkStatus();
+    };
+    static_cast<void>(interface_->graph_.ObserveOutputStream("multi_face_landmarks", packet_callback));
+}
+
+void FaceMeshLibrary::Start() {
+    interface_->Start();
+}
+
+void FaceMeshLibrary::Detect(const cv::Mat & frame) {
+    interface_->Detect(frame);
+}
+
+void FaceMeshLibrary::Stop() {
     interface_->Stop();
 }
