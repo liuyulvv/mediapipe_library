@@ -88,4 +88,11 @@ using NormalizedLandmark = Landmark;
 
 using NormalizedLandmarkList = std::vector<NormalizedLandmark>;
 
+enum class HolisticCallbackType {
+    POSE,
+    FACE,
+    LEFT_HAND,
+    RIGHT_HAND
+};
+
 #endif

@@ -112,4 +112,27 @@ private:
     NormalizedLandmarkCallback observe_callback_;
 };
 
+class HolisticTrackLibrary final : public HolisticTrackInterface {
+public:
+    HolisticTrackLibrary();
+    ~HolisticTrackLibrary() = default;
+
+    virtual void SetLogger(const std::shared_ptr<MediapipeLogger>& logger) override;
+    virtual void SetGraph(const std::string& path) override;
+    virtual void SetPreviewCallback(const MatCallback& callback) override;
+    virtual void SetObserveCallback(const NormalizedLandmarkCallback& callback, const HolisticCallbackType& type) override;
+    virtual void Preview() override;
+    virtual void Observe() override;
+    virtual void Start() override;
+    virtual void Detect(const cv::Mat& frame) override;
+    virtual void Stop() override;
+
+private:
+    std::unique_ptr<MediapipeLibrary> interface_;
+    NormalizedLandmarkCallback pose_callback_;
+    NormalizedLandmarkCallback face_callback_;
+    NormalizedLandmarkCallback left_hand_callback_;
+    NormalizedLandmarkCallback right_hand_callback_;
+};
+
 #endif

@@ -21,4 +21,6 @@ LibraryExport HandTrackInterface* CreateHandTrackInterface();
 
 LibraryExport PoseTrackInterface* CreatePoseTrackInterface();
 
+LibraryExport HolisticTrackInterface* CreateHolisticTrackInterface();
+
 #endif

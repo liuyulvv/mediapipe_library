@@ -20,3 +20,8 @@ LibraryExport PoseTrackInterface * CreatePoseTrackInterface() {
     PoseTrackInterface* interface = new PoseTrackLibrary();
     return interface;
 }
+
+LibraryExport HolisticTrackInterface * CreateHolisticTrackInterface() {
+    HolisticTrackInterface* interface = new HolisticTrackLibrary();
+    return interface;
+}

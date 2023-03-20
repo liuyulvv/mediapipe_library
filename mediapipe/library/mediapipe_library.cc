@@ -310,3 +310,111 @@ void PoseTrackLibrary::Detect(const cv::Mat & frame) {
 void PoseTrackLibrary::Stop() {
     interface_->Stop();
 }
+
+HolisticTrackLibrary::HolisticTrackLibrary() {
+    interface_ = std::make_unique<MediapipeLibrary>();
+}
+
+void HolisticTrackLibrary::SetLogger(const std::shared_ptr<MediapipeLogger>& logger) {
+    interface_->SetLogger(logger);
+}
+
+void HolisticTrackLibrary::SetGraph(const std::string & path) {
+    interface_->SetGraph(path);
+}
+
+void HolisticTrackLibrary::SetPreviewCallback(const MatCallback & callback) {
+    interface_->SetPreviewCallback(callback);
+}
+
+void HolisticTrackLibrary::SetObserveCallback(const NormalizedLandmarkCallback & callback, const HolisticCallbackType& type) {
+    switch (type) {
+        case HolisticCallbackType::POSE:
+            pose_callback_ = callback;
+            break;
+        case HolisticCallbackType::FACE:
+            face_callback_ = callback;
+            break;
+        case HolisticCallbackType::LEFT_HAND:
+            left_hand_callback_ = callback;
+            break;
+        case HolisticCallbackType::RIGHT_HAND:
+            right_hand_callback_ = callback;
+            break;
+    }
+}
+
+void HolisticTrackLibrary::Preview() {
+    interface_->Preview();
+}
+
+void HolisticTrackLibrary::Observe() {
+    if (pose_callback_) {
+        auto packet_callback = [&](const mediapipe::Packet& packet) {
+            auto& pose_landmarks = packet.Get<mediapipe::NormalizedLandmarkList>();
+            NormalizedLandmarkList ret;
+            for(int i = 0; i< pose_landmarks.landmark_size(); ++i) {
+                const auto& pose_landmark = pose_landmarks.landmark(i);
+                NormalizedLandmark normalized_landmark {pose_landmark.x(), pose_landmark.y(), pose_landmark.z(), pose_landmark.visibility(), pose_landmark.presence()};
+                ret.push_back(normalized_landmark);
+            }
+            pose_callback_(ret);
+            return absl::OkStatus();
+        };
+        static_cast<void>(interface_->graph_.ObserveOutputStream("pose_landmarks", packet_callback));
+    }
+    if (face_callback_) {
+        auto packet_callback = [&](const mediapipe::Packet& packet) {
+            auto& pose_landmarks = packet.Get<mediapipe::NormalizedLandmarkList>();
+            NormalizedLandmarkList ret;
+            for(int i = 0; i< pose_landmarks.landmark_size(); ++i) {
+                const auto& pose_landmark = pose_landmarks.landmark(i);
+                NormalizedLandmark normalized_landmark {pose_landmark.x(), pose_landmark.y(), pose_landmark.z(), pose_landmark.visibility(), pose_landmark.presence()};
+                ret.push_back(normalized_landmark);
+            }
+            face_callback_(ret);
+            return absl::OkStatus();
+        };
+        static_cast<void>(interface_->graph_.ObserveOutputStream("face_landmarks", packet_callback));
+    }
+    if (left_hand_callback_) {
+        auto packet_callback = [&](const mediapipe::Packet& packet) {
+            auto& pose_landmarks = packet.Get<mediapipe::NormalizedLandmarkList>();
+            NormalizedLandmarkList ret;
+            for(int i = 0; i< pose_landmarks.landmark_size(); ++i) {
+                const auto& pose_landmark = pose_landmarks.landmark(i);
+                NormalizedLandmark normalized_landmark {pose_landmark.x(), pose_landmark.y(), pose_landmark.z(), pose_landmark.visibility(), pose_landmark.presence()};
+                ret.push_back(normalized_landmark);
+            }
+            left_hand_callback_(ret);
+            return absl::OkStatus();
+        };
+        static_cast<void>(interface_->graph_.ObserveOutputStream("left_hand_landmarks", packet_callback));
+    }
+    if (right_hand_callback_) {
+        auto packet_callback = [&](const mediapipe::Packet& packet) {
+            auto& pose_landmarks = packet.Get<mediapipe::NormalizedLandmarkList>();
+            NormalizedLandmarkList ret;
+            for(int i = 0; i< pose_landmarks.landmark_size(); ++i) {
+                const auto& pose_landmark = pose_landmarks.landmark(i);
+                NormalizedLandmark normalized_landmark {pose_landmark.x(), pose_landmark.y(), pose_landmark.z(), pose_landmark.visibility(), pose_landmark.presence()};
+                ret.push_back(normalized_landmark);
+            }
+            right_hand_callback_(ret);
+            return absl::OkStatus();
+        };
+        static_cast<void>(interface_->graph_.ObserveOutputStream("right_hand_landmarks", packet_callback));
+    }
+}
+
+void HolisticTrackLibrary::Start() {
+    interface_->Start();
+}
+
+void HolisticTrackLibrary::Detect(const cv::Mat & frame) {
+    interface_->Detect(frame);
+}
+
+void HolisticTrackLibrary::Stop() {
+    interface_->Stop();
+}

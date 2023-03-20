@@ -60,8 +60,19 @@ public:
     PoseTrackInterface() = default;
     virtual ~PoseTrackInterface() = default;
 
-    using NormalizedLandmarkCallback = std::function<void(NormalizedLandmarkList& normalized_landmark_lists)>;
+    using NormalizedLandmarkCallback = std::function<void(NormalizedLandmarkList& normalized_landmark_list)>;
     virtual void SetObserveCallback(const NormalizedLandmarkCallback& callback) = 0;
+    virtual void Observe() = 0;
+};
+
+class HolisticTrackInterface : public MediapipeInterface {
+public:
+    HolisticTrackInterface() = default;
+    virtual ~HolisticTrackInterface() = default;
+
+    using NormalizedLandmarkCallback = std::function<void(NormalizedLandmarkList& normalized_landmark_list)>;
+
+    virtual void SetObserveCallback(const NormalizedLandmarkCallback& callback, const HolisticCallbackType& type) = 0;
     virtual void Observe() = 0;
 };
 
