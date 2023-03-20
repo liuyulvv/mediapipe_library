@@ -2,3 +2,5 @@
 .DS_Store
 build/
 preview
+*.dll
+*.pdb
