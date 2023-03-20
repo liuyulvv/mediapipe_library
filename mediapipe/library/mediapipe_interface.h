@@ -55,4 +55,14 @@ public:
     virtual void Observe() = 0;
 };
 
+class PoseTrackInterface : public MediapipeInterface {
+public:
+    PoseTrackInterface() = default;
+    virtual ~PoseTrackInterface() = default;
+
+    using NormalizedLandmarkCallback = std::function<void(NormalizedLandmarkList& normalized_landmark_lists)>;
+    virtual void SetObserveCallback(const NormalizedLandmarkCallback& callback) = 0;
+    virtual void Observe() = 0;
+};
+
 #endif

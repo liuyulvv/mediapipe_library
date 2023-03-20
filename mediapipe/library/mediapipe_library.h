@@ -92,4 +92,24 @@ private:
     NormalizedLandmarkCallback observe_callback_;
 };
 
+class PoseTrackLibrary final : public PoseTrackInterface {
+public:
+    PoseTrackLibrary();
+    ~PoseTrackLibrary() = default;
+
+    virtual void SetLogger(const std::shared_ptr<MediapipeLogger>& logger) override;
+    virtual void SetGraph(const std::string& path) override;
+    virtual void SetPreviewCallback(const MatCallback& callback) override;
+    virtual void SetObserveCallback(const NormalizedLandmarkCallback& callback) override;
+    virtual void Preview() override;
+    virtual void Observe() override;
+    virtual void Start() override;
+    virtual void Detect(const cv::Mat& frame) override;
+    virtual void Stop() override;
+
+private:
+    std::unique_ptr<MediapipeLibrary> interface_;
+    NormalizedLandmarkCallback observe_callback_;
+};
+
 #endif

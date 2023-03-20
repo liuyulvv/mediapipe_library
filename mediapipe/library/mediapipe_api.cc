@@ -15,3 +15,8 @@ LibraryExport HandTrackInterface * CreateHandTrackInterface() {
     HandTrackInterface* interface = new HandTrackLibrary();
     return interface;
 }
+
+LibraryExport PoseTrackInterface * CreatePoseTrackInterface() {
+    PoseTrackInterface* interface = new PoseTrackLibrary();
+    return interface;
+}
