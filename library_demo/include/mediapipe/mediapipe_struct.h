@@ -19,10 +19,10 @@ struct BoundingBox {
 };
 
 struct RelativeBoundingBox {
-    float x_min_ = 0.f;
-    float y_min_ = 0.f;
-    float width_ = 0.f;
-    float height_ = 0.f;
+    float x_min_ = 0.F;
+    float y_min_ = 0.F;
+    float width_ = 0.F;
+    float height_ = 0.F;
 };
 
 struct RasterizationInterval {
@@ -42,10 +42,10 @@ struct BinaryMask {
 };
 
 struct RelativeKeypoint {
-    float x_ = 0.f;
-    float y_ = 0.f;
+    float x_ = 0.F;
+    float y_ = 0.F;
     std::string keypoint_label_{};
-    float score_ = 0.f;
+    float score_ = 0.F;
 };
 
 struct LocationData {
@@ -58,7 +58,7 @@ struct LocationData {
 
 struct AssociateDetection {
     int id_ = 0;
-    float confidence_ = 0.f;
+    float confidence_ = 0.F;
 };
 
 struct Detection {
@@ -73,5 +73,19 @@ struct Detection {
     std::vector<std::string> display_name_{};
     int64_t timestamp_usec_ = 10;
 };
+
+struct Landmark {
+    float x_ = 0.F;
+    float y_ = 0.F;
+    float z_ = 0.F;
+    float visibility_ = 0.F;
+    float presence_ = 0.F;
+};
+
+using LandmarkList = std::vector<Landmark>;
+
+using NormalizedLandmark = Landmark;
+
+using NormalizedLandmarkList = std::vector<NormalizedLandmark>;
 
 #endif
