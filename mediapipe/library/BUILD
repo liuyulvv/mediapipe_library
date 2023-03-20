@@ -29,10 +29,10 @@ cc_binary(
         "//mediapipe/graphs/face_mesh:desktop_live_calculators",
         # hand_tracking
         "//mediapipe/graphs/hand_tracking:desktop_tflite_calculators",
-        # holistic_tracking
-        "//mediapipe/graphs/holistic_tracking:holistic_tracking_cpu_graph_deps",
         # pose_tracking
         "//mediapipe/graphs/pose_tracking:pose_tracking_cpu_deps",
+        # holistic_tracking
+        "//mediapipe/graphs/holistic_tracking:holistic_tracking_cpu_graph_deps",
     ],
 )
 
@@ -67,10 +67,10 @@ cc_binary(
         "//mediapipe/graphs/face_mesh:desktop_live_calculators",
         # hand_tracking
         "//mediapipe/graphs/hand_tracking:desktop_tflite_calculators",
-        # holistic_tracking
-        "//mediapipe/graphs/holistic_tracking:holistic_tracking_cpu_graph_deps",
         # pose_tracking
         "//mediapipe/graphs/pose_tracking:pose_tracking_cpu_deps",
+        # holistic_tracking
+        "//mediapipe/graphs/holistic_tracking:holistic_tracking_cpu_graph_deps",
     ],
 )
 
@@ -105,9 +105,9 @@ cc_binary(
         "//mediapipe/graphs/face_mesh:desktop_live_calculators",
         # hand_tracking
         "//mediapipe/graphs/hand_tracking:desktop_tflite_calculators",
-        # holistic_tracking
-        "//mediapipe/graphs/holistic_tracking:holistic_tracking_cpu_graph_deps",
         # pose_tracking
         "//mediapipe/graphs/pose_tracking:pose_tracking_cpu_deps",
+        # holistic_tracking
+        "//mediapipe/graphs/holistic_tracking:holistic_tracking_cpu_graph_deps",
     ],
 )
