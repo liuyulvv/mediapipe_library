@@ -10,3 +10,8 @@ LibraryExport FaceMeshInterface* CreateFaceMeshInterface() {
     FaceMeshInterface* interface  = new FaceMeshLibrary();
     return interface;
 }
+
+LibraryExport HandTrackInterface * CreateHandTrackInterface() {
+    HandTrackInterface* interface = new HandTrackLibrary();
+    return interface;
+}

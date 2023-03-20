@@ -45,4 +45,14 @@ public:
     virtual void Observe() = 0;
 };
 
+class HandTrackInterface : public MediapipeInterface {
+public:
+    HandTrackInterface() = default;
+    virtual ~HandTrackInterface() = default;
+
+    using NormalizedLandmarkCallback = std::function<void(std::vector<NormalizedLandmarkList>& normalized_landmark_lists)>;
+    virtual void SetObserveCallback(const NormalizedLandmarkCallback& callback) = 0;
+    virtual void Observe() = 0;
+};
+
 #endif

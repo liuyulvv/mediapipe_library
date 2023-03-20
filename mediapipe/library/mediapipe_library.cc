@@ -204,3 +204,58 @@ void FaceMeshLibrary::Detect(const cv::Mat & frame) {
 void FaceMeshLibrary::Stop() {
     interface_->Stop();
 }
+
+HandTrackLibrary::HandTrackLibrary() {
+    interface_ = std::make_unique<MediapipeLibrary>();
+}
+
+void HandTrackLibrary::SetLogger(const std::shared_ptr<MediapipeLogger>& logger) {
+    interface_->SetLogger(logger);
+}
+
+void HandTrackLibrary::SetGraph(const std::string & path) {
+    interface_->SetGraph(path);
+}
+
+void HandTrackLibrary::SetPreviewCallback(const MatCallback & callback) {
+    interface_->SetPreviewCallback(callback);
+}
+
+void HandTrackLibrary::SetObserveCallback(const NormalizedLandmarkCallback& callback) {
+    observe_callback_ = callback;
+}
+
+void HandTrackLibrary::Preview() {
+    interface_->Preview();
+}
+
+void HandTrackLibrary::Observe() {
+    auto packet_callback = [&](const mediapipe::Packet& packet) {
+        auto& multi_hand_landmarks = packet.Get<std::vector<mediapipe::NormalizedLandmarkList>>();
+        std::vector<NormalizedLandmarkList> ret;
+        for (const auto& hand_landmarks : multi_hand_landmarks) {
+            NormalizedLandmarkList normalized_landmark_list;
+            for(int i = 0; i< hand_landmarks.landmark_size(); ++i) {
+                const auto& hand_landmark = hand_landmarks.landmark(i);
+                NormalizedLandmark normalized_landmark {hand_landmark.x(), hand_landmark.y(), hand_landmark.z(), hand_landmark.visibility(), hand_landmark.presence()};
+                normalized_landmark_list.push_back(normalized_landmark);
+            }
+            ret.push_back(normalized_landmark_list);
+        }
+        observe_callback_(ret);
+        return absl::OkStatus();
+    };
+    static_cast<void>(interface_->graph_.ObserveOutputStream("multi_hand_landmarks", packet_callback));
+}
+
+void HandTrackLibrary::Start() {
+    interface_->Start();
+}
+
+void HandTrackLibrary::Detect(const cv::Mat & frame) {
+    interface_->Detect(frame);
+}
+
+void HandTrackLibrary::Stop() {
+    interface_->Stop();
+}

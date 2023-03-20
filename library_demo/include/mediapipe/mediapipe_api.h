@@ -17,4 +17,6 @@ LibraryExport FaceDetectInterface* CreateFaceDetectInterface();
 
 LibraryExport FaceMeshInterface* CreateFaceMeshInterface();
 
+LibraryExport HandTrackInterface* CreateHandTrackInterface();
+
 #endif

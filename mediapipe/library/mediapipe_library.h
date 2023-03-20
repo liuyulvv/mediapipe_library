@@ -12,10 +12,10 @@
 #include <unordered_map>
 #include <vector>
 
-class MediapipeLibrary : public MediapipeInterface {
+class MediapipeLibrary final : public MediapipeInterface {
 public:
     MediapipeLibrary(); 
-    virtual ~MediapipeLibrary() = default;
+    ~MediapipeLibrary() = default;
 
     virtual void SetLogger(const std::shared_ptr<MediapipeLogger>& logger) override;
     virtual void SetGraph(const std::string& path) override;
@@ -32,9 +32,10 @@ public:
     MatCallback preview_callback_;
 };
 
-class FaceDetectLibrary : public FaceDetectInterface {
+class FaceDetectLibrary final : public FaceDetectInterface {
 public:
     FaceDetectLibrary();
+    ~FaceDetectLibrary() = default;
 
     virtual void SetLogger(const std::shared_ptr<MediapipeLogger>& logger) override;
     virtual void SetGraph(const std::string& path) override;
@@ -51,9 +52,30 @@ private:
     DetectionCallback observe_callback_;
 };
 
-class FaceMeshLibrary : public FaceMeshInterface {
+class FaceMeshLibrary final : public FaceMeshInterface {
 public:
     FaceMeshLibrary();
+    ~FaceMeshLibrary() = default;
+
+    virtual void SetLogger(const std::shared_ptr<MediapipeLogger>& logger) override;
+    virtual void SetGraph(const std::string& path) override;
+    virtual void SetPreviewCallback(const MatCallback& callback) override;
+    virtual void SetObserveCallback(const NormalizedLandmarkCallback& callback) override;
+    virtual void Preview() override;
+    virtual void Observe() override;
+    virtual void Start() override;
+    virtual void Detect(const cv::Mat& frame) override;
+    virtual void Stop() override;
+
+private:
+    std::unique_ptr<MediapipeLibrary> interface_;
+    NormalizedLandmarkCallback observe_callback_;
+};
+
+class HandTrackLibrary final : public HandTrackInterface {
+public:
+    HandTrackLibrary();
+    ~HandTrackLibrary() = default;
 
     virtual void SetLogger(const std::shared_ptr<MediapipeLogger>& logger) override;
     virtual void SetGraph(const std::string& path) override;
