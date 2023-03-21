@@ -15,7 +15,7 @@ public:
     }
 };
 
-const std::string GRAPH_PATH = "graph/";
+const std::string GRAPH_PATH = "mediapipe/graph/";
 const std::string GRAPH_NAME = "holistic_tracking_cpu.pbtxt";
 
 int main() {

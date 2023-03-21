@@ -15,7 +15,7 @@ public:
     }
 };
 
-const std::string GRAPH_PATH = "graph/";
+const std::string GRAPH_PATH = "mediapipe/graph/";
 const std::string GRAPH_NAME = "face_mesh_desktop_live.pbtxt";
 
 int main() {
