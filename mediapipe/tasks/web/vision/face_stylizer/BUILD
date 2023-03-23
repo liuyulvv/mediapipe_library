@@ -1,4 +1,4 @@
-# This contains the MediaPipe Image Segmenter Task.
+# This contains the MediaPipe Face Stylizer Task.
 
 load("//mediapipe/framework/port:build_config.bzl", "mediapipe_ts_declaration", "mediapipe_ts_library")
 load("@npm//@bazel/jasmine:index.bzl", "jasmine_node_test")
@@ -8,28 +8,25 @@ package(default_visibility = ["//mediapipe/tasks:internal"])
 licenses(["notice"])
 
 mediapipe_ts_library(
-    name = "image_segmenter",
-    srcs = ["image_segmenter.ts"],
+    name = "face_stylizer",
+    srcs = ["face_stylizer.ts"],
     deps = [
-        ":image_segmenter_types",
+        ":face_stylizer_types",
         "//mediapipe/framework:calculator_jspb_proto",
         "//mediapipe/framework:calculator_options_jspb_proto",
         "//mediapipe/tasks/cc/core/proto:base_options_jspb_proto",
-        "//mediapipe/tasks/cc/vision/image_segmenter/calculators:tensors_to_segmentation_calculator_jspb_proto",
-        "//mediapipe/tasks/cc/vision/image_segmenter/proto:image_segmenter_graph_options_jspb_proto",
-        "//mediapipe/tasks/cc/vision/image_segmenter/proto:segmenter_options_jspb_proto",
+        "//mediapipe/tasks/cc/vision/face_stylizer/proto:face_stylizer_graph_options_jspb_proto",
         "//mediapipe/tasks/web/core",
         "//mediapipe/tasks/web/vision/core:image_processing_options",
         "//mediapipe/tasks/web/vision/core:types",
         "//mediapipe/tasks/web/vision/core:vision_task_runner",
-        "//mediapipe/util:label_map_jspb_proto",
         "//mediapipe/web/graph_runner:graph_runner_ts",
     ],
 )
 
 mediapipe_ts_declaration(
-    name = "image_segmenter_types",
-    srcs = ["image_segmenter_options.d.ts"],
+    name = "face_stylizer_types",
+    srcs = ["face_stylizer_options.d.ts"],
     deps = [
         "//mediapipe/tasks/web/core",
         "//mediapipe/tasks/web/core:classifier_options",
@@ -38,14 +35,14 @@ mediapipe_ts_declaration(
 )
 
 mediapipe_ts_library(
-    name = "image_segmenter_test_lib",
+    name = "face_stylizer_test_lib",
     testonly = True,
     srcs = [
-        "image_segmenter_test.ts",
+        "face_stylizer_test.ts",
     ],
     deps = [
-        ":image_segmenter",
-        ":image_segmenter_types",
+        ":face_stylizer",
+        ":face_stylizer_types",
         "//mediapipe/framework:calculator_jspb_proto",
         "//mediapipe/tasks/web/core",
         "//mediapipe/tasks/web/core:task_runner_test_utils",
@@ -54,7 +51,7 @@ mediapipe_ts_library(
 )
 
 jasmine_node_test(
-    name = "image_segmenter_test",
+    name = "face_stylizer_test",
     tags = ["nomsan"],
-    deps = [":image_segmenter_test_lib"],
+    deps = [":face_stylizer_test_lib"],
 )
