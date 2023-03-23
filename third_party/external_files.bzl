@@ -317,6 +317,12 @@ def external_files():
     )
 
     http_file(
+        name = "com_google_mediapipe_face_blendshapes_tflite",
+        sha256 = "4f36dded049db18d76048567439b2a7f58f1daabc00d78bfe8f3ad396a2d2082",
+        urls = ["https://storage.googleapis.com/mediapipe-assets/face_blendshapes.tflite?generation=1677787708051579"],
+    )
+
+    http_file(
         name = "com_google_mediapipe_face_detection_full_range_sparse_tflite",
         sha256 = "2c3728e6da56f21e21a320433396fb06d40d9088f2247c05e5635a688d45dfe1",
         urls = ["https://storage.googleapis.com/mediapipe-assets/face_detection_full_range_sparse.tflite?generation=1674261618323821"],
