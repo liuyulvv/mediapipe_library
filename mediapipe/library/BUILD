@@ -3,10 +3,8 @@ cc_binary(
     srcs = [
         "mediapipe_api.cc",
         "mediapipe_api.h",
-        "mediapipe_interface.h",
-        "mediapipe_library.cc",
-        "mediapipe_library.h",
-        "mediapipe_log.h",
+        "mediapipe_interface.hpp",
+        "mediapipe_interface.cc",
         "mediapipe_struct.h",
     ],
     linkshared = True,
@@ -23,8 +21,6 @@ cc_binary(
         "//third_party:opencv",
         "@com_google_absl//absl/flags:flag",
         "@com_google_absl//absl/flags:parse",
-        # face_detection
-        "//mediapipe/graphs/face_detection:desktop_live_calculators",
         # face_mesh
         "//mediapipe/graphs/face_mesh:desktop_live_calculators",
         # hand_tracking
@@ -33,6 +29,8 @@ cc_binary(
         "//mediapipe/graphs/pose_tracking:pose_tracking_cpu_deps",
         # holistic_tracking
         "//mediapipe/graphs/holistic_tracking:holistic_tracking_cpu_graph_deps",
+        # face_blend_shape
+        "//mediapipe/graphs/face_blendshape:desktop_live_calculators",
     ],
 )
 
@@ -41,10 +39,8 @@ cc_binary(
     srcs = [
         "mediapipe_api.cc",
         "mediapipe_api.h",
-        "mediapipe_interface.h",
-        "mediapipe_library.cc",
-        "mediapipe_library.h",
-        "mediapipe_log.h",
+        "mediapipe_interface.hpp",
+        "mediapipe_interface.cc",
         "mediapipe_struct.h",
     ],
     linkshared = True,
@@ -61,8 +57,6 @@ cc_binary(
         "//third_party:opencv",
         "@com_google_absl//absl/flags:flag",
         "@com_google_absl//absl/flags:parse",
-        # face_detection
-        "//mediapipe/graphs/face_detection:desktop_live_calculators",
         # face_mesh
         "//mediapipe/graphs/face_mesh:desktop_live_calculators",
         # hand_tracking
@@ -71,6 +65,8 @@ cc_binary(
         "//mediapipe/graphs/pose_tracking:pose_tracking_cpu_deps",
         # holistic_tracking
         "//mediapipe/graphs/holistic_tracking:holistic_tracking_cpu_graph_deps",
+        # face_blend_shape
+        "//mediapipe/graphs/face_blendshape:desktop_live_calculators",
     ],
 )
 
@@ -79,10 +75,8 @@ cc_binary(
     srcs = [
         "mediapipe_api.cc",
         "mediapipe_api.h",
-        "mediapipe_interface.h",
-        "mediapipe_library.cc",
-        "mediapipe_library.h",
-        "mediapipe_log.h",
+        "mediapipe_interface.hpp",
+        "mediapipe_interface.cc",
         "mediapipe_struct.h",
     ],
     linkshared = True,
@@ -99,8 +93,6 @@ cc_binary(
         "//third_party:opencv",
         "@com_google_absl//absl/flags:flag",
         "@com_google_absl//absl/flags:parse",
-        # face_detection
-        "//mediapipe/graphs/face_detection:desktop_live_calculators",
         # face_mesh
         "//mediapipe/graphs/face_mesh:desktop_live_calculators",
         # hand_tracking
@@ -109,5 +101,7 @@ cc_binary(
         "//mediapipe/graphs/pose_tracking:pose_tracking_cpu_deps",
         # holistic_tracking
         "//mediapipe/graphs/holistic_tracking:holistic_tracking_cpu_graph_deps",
+        # face_blend_shape
+        "//mediapipe/graphs/face_blendshape:desktop_live_calculators",
     ],
 )
