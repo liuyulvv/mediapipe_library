@@ -4,3 +4,5 @@ build/
 preview
 *.dll
 *.pdb
+*.exe
+*.ilk
