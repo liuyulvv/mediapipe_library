@@ -8,23 +8,75 @@
 
 #include "mediapipe_library.h"
 
-class Logger : public MediapipeLogger {
-public:
-    virtual void Log(const std::string &content) const override {
-        std::cout << content << std::endl;
-    }
-};
+cv::Mat camera_bgr_frame;
 
-const std::string GRAPH_PATH = "mediapipe/graph/";
-const std::string GRAPH_NAME = "holistic_tracking_cpu.pbtxt";
+NormalizedLandmark *pose_landmark_lists = nullptr;
+NormalizedLandmark *face_landmark_lists = nullptr;
+NormalizedLandmark *left_hand_landmark_lists = nullptr;
+NormalizedLandmark *right_hand_landmark_lists = nullptr;
+
+int pose_landmark_lists_size = 0;
+int face_landmark_lists_size = 0;
+int left_hand_landmark_lists_size = 0;
+int right_hand_landmark_lists_size = 0;
+
+void PoseLandmarkCallback(NormalizedLandmark *normalized_landmark_lists, size_t size) {
+    int width = camera_bgr_frame.cols;
+    int height = camera_bgr_frame.rows;
+    pose_landmark_lists_size = size;
+    pose_landmark_lists = new NormalizedLandmark[size];
+    memcpy(pose_landmark_lists, normalized_landmark_lists, sizeof(NormalizedLandmark) * size);
+    for (int i = 0; i < size; ++i) {
+        auto &landmark = pose_landmark_lists[i];
+        landmark.x_ *= width;
+        landmark.y_ *= height;
+    }
+}
+
+void FaceLandmarkCallback(NormalizedLandmark *normalized_landmark_lists, size_t size) {
+    int width = camera_bgr_frame.cols;
+    int height = camera_bgr_frame.rows;
+    face_landmark_lists_size = size;
+    face_landmark_lists = new NormalizedLandmark[size];
+    memcpy(face_landmark_lists, normalized_landmark_lists, sizeof(NormalizedLandmark) * size);
+    for (int i = 0; i < size; ++i) {
+        auto &landmark = face_landmark_lists[i];
+        landmark.x_ *= width;
+        landmark.y_ *= height;
+    }
+}
+
+void LeftHandLandmarkCallback(NormalizedLandmark *normalized_landmark_lists, size_t size) {
+    int width = camera_bgr_frame.cols;
+    int height = camera_bgr_frame.rows;
+    left_hand_landmark_lists_size = size;
+    left_hand_landmark_lists = new NormalizedLandmark[size];
+    memcpy(left_hand_landmark_lists, normalized_landmark_lists, sizeof(NormalizedLandmark) * size);
+    for (int i = 0; i < size; ++i) {
+        auto &landmark = left_hand_landmark_lists[i];
+        landmark.x_ *= width;
+        landmark.y_ *= height;
+    }
+}
+
+void RightHandLandmarkCallback(NormalizedLandmark *normalized_landmark_lists, size_t size) {
+    int width = camera_bgr_frame.cols;
+    int height = camera_bgr_frame.rows;
+    right_hand_landmark_lists_size = size;
+    right_hand_landmark_lists = new NormalizedLandmark[size];
+    memcpy(right_hand_landmark_lists, normalized_landmark_lists, sizeof(NormalizedLandmark) * size);
+    for (int i = 0; i < size; ++i) {
+        auto &landmark = right_hand_landmark_lists[i];
+        landmark.x_ *= width;
+        landmark.y_ *= height;
+    }
+}
+
+const std::string GRAPH_PATH = "mediapipe/graphs/holistic_tracking/holistic_tracking_cpu.pbtxt";
 
 int main() {
-    // init mediapipe and logger
-    auto logger = std::make_shared<Logger>();
-    auto interface = CreateHolisticTrackInterface();
-    interface->SetLogger(logger);
+    CreateHolisticTrackInterface(GRAPH_PATH.c_str());
 
-    cv::namedWindow("MediaPipe");
     cv::namedWindow("MediaPipeLibrary");
     cv::VideoCapture capture;
     // capture.open(0);
@@ -32,75 +84,19 @@ int main() {
     capture.open("D:/video/cxk.mp4");
     bool is_camera = false;
 
-    cv::Mat output_bgr_frame;
-    cv::Mat camera_bgr_frame;
-
     bool grab_frame = true;
     if (!capture.isOpened()) {
-        logger->Log("VideoCapture is not open");
         return -1;
     }
 
-    interface->SetGraph(GRAPH_PATH + GRAPH_NAME);
+    SetHolisticTrackObserveCallback(PoseLandmarkCallback, HolisticCallbackType::POSE);
+    SetHolisticTrackObserveCallback(FaceLandmarkCallback, HolisticCallbackType::FACE);
+    SetHolisticTrackObserveCallback(LeftHandLandmarkCallback, HolisticCallbackType::LEFT_HAND);
+    SetHolisticTrackObserveCallback(RightHandLandmarkCallback, HolisticCallbackType::RIGHT_HAND);
 
-    auto mat_callback = [&](const cv::Mat &frame) {
-        cv::cvtColor(frame, output_bgr_frame, cv::COLOR_RGB2BGR);
-    };
-    interface->SetPreviewCallback(mat_callback);
-    interface->Preview();
+    ObserveHolisticTrack();
 
-    LandmarkList pose_landmark_list;
-    LandmarkList face_landmark_list;
-    LandmarkList left_hand_landmark_list;
-    LandmarkList right_hand_landmark_list;
-
-    auto pose_landmark_callback = [&](NormalizedLandmarkList &normalized_landmark_list) {
-        int width = camera_bgr_frame.cols;
-        int height = camera_bgr_frame.rows;
-        pose_landmark_list = normalized_landmark_list;
-        for (auto &landmark : pose_landmark_list) {
-            landmark.x_ *= width;
-            landmark.y_ *= height;
-        }
-    };
-
-    auto face_landmark_callback = [&](NormalizedLandmarkList &normalized_landmark_list) {
-        int width = camera_bgr_frame.cols;
-        int height = camera_bgr_frame.rows;
-        face_landmark_list = normalized_landmark_list;
-        for (auto &landmark : face_landmark_list) {
-            landmark.x_ *= width;
-            landmark.y_ *= height;
-        }
-    };
-
-    auto left_hand_landmark_callback = [&](NormalizedLandmarkList &normalized_landmark_list) {
-        int width = camera_bgr_frame.cols;
-        int height = camera_bgr_frame.rows;
-        left_hand_landmark_list = normalized_landmark_list;
-        for (auto &landmark : left_hand_landmark_list) {
-            landmark.x_ *= width;
-            landmark.y_ *= height;
-        }
-    };
-
-    auto right_hand_landmark_callback = [&](NormalizedLandmarkList &normalized_landmark_list) {
-        int width = camera_bgr_frame.cols;
-        int height = camera_bgr_frame.rows;
-        right_hand_landmark_list = normalized_landmark_list;
-        for (auto &landmark : right_hand_landmark_list) {
-            landmark.x_ *= width;
-            landmark.y_ *= height;
-        }
-    };
-
-    interface->SetObserveCallback(pose_landmark_callback, HolisticCallbackType::POSE);
-    interface->SetObserveCallback(face_landmark_callback, HolisticCallbackType::FACE);
-    interface->SetObserveCallback(left_hand_landmark_callback, HolisticCallbackType::LEFT_HAND);
-    interface->SetObserveCallback(right_hand_landmark_callback, HolisticCallbackType::RIGHT_HAND);
-    interface->Observe();
-
-    interface->Start();
+    StartHolisticTrack();
 
     while (grab_frame) {
         capture >> camera_bgr_frame;
@@ -108,37 +104,35 @@ int main() {
             cv::flip(camera_bgr_frame, camera_bgr_frame, 1);
         }
         if (camera_bgr_frame.empty()) {
-            logger->Log("Empty frame.");
             break;
         }
         cv::Mat camera_rgb_frame;
         cv::cvtColor(camera_bgr_frame, camera_rgb_frame, cv::COLOR_BGR2RGB);
-        interface->Detect(camera_rgb_frame);
-
-        if (output_bgr_frame.cols > 0) {
-            cv::imshow("MediaPipe", output_bgr_frame);
-        }
+        HandTrackProcess(&camera_rgb_frame);
 
         if (camera_bgr_frame.cols > 0) {
-            for (auto &landmark : pose_landmark_list) {
+            for (int i = 0; i < pose_landmark_lists_size; ++i) {
+                auto &landmark = pose_landmark_lists[i];
                 cv::circle(camera_bgr_frame, cv::Point2f(landmark.x_, landmark.y_), 2, cv::Scalar(0, 0, 255));
             }
-            for (auto &landmark : face_landmark_list) {
+            for (int i = 0; i < face_landmark_lists_size; ++i) {
+                auto &landmark = face_landmark_lists[i];
                 cv::circle(camera_bgr_frame, cv::Point2f(landmark.x_, landmark.y_), 2, cv::Scalar(255, 0, 0));
             }
-            for (auto &landmark : left_hand_landmark_list) {
+            for (int i = 0; i < left_hand_landmark_lists_size; ++i) {
+                auto &landmark = left_hand_landmark_lists[i];
                 cv::circle(camera_bgr_frame, cv::Point2f(landmark.x_, landmark.y_), 2, cv::Scalar(127, 127, 127));
             }
-            for (auto &landmark : right_hand_landmark_list) {
+            for (int i = 0; i < right_hand_landmark_lists_size; ++i) {
+                auto &landmark = right_hand_landmark_lists[i];
                 cv::circle(camera_bgr_frame, cv::Point2f(landmark.x_, landmark.y_), 2, cv::Scalar(127, 127, 127));
             }
             cv::imshow("MediaPipeLibrary", camera_bgr_frame);
         }
-
         int pressed_key = cv::waitKey(30);
         if (pressed_key >= 0 && pressed_key != 255) grab_frame = false;
     }
-    interface->Stop();
-    delete interface;
+    StopHolisticTrack();
+    ReleaseHolisticTrackInterface();
     return 0;
 }

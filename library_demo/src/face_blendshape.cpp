@@ -14,26 +14,19 @@
 
 cv::Mat camera_bgr_frame;
 
-NormalizedLandmark *landmark_lists = nullptr;
-int landmark_lists_size = 0;
+float *blend_shape_list = nullptr;
+int blend_shape_size = 0;
 
-void LandmarkCallback(NormalizedLandmark *normalized_landmark_lists, size_t size) {
-    int width = camera_bgr_frame.cols;
-    int height = camera_bgr_frame.rows;
-    landmark_lists_size = size;
-    landmark_lists = new NormalizedLandmark[size];
-    memcpy(landmark_lists, normalized_landmark_lists, sizeof(NormalizedLandmark) * size);
-    for (int i = 0; i < size; ++i) {
-        auto &landmark = landmark_lists[i];
-        landmark.x_ *= width;
-        landmark.y_ *= height;
-    }
+void BlendShapeCallback(float *blend_shapes, size_t size) {
+    blend_shape_size = size;
+    blend_shape_list = new float[size];
+    memcpy(blend_shape_list, blend_shapes, sizeof(float) * size);
 }
 
-const std::string GRAPH_PATH = "mediapipe/graphs/face_mesh/face_mesh_desktop_live.pbtxt";
+const std::string GRAPH_PATH = "mediapipe/graphs/face_blendshape/face_blendshape_desktop_live.pbtxt";
 
 int main() {
-    CreateFaceMeshInterface(GRAPH_PATH.c_str());
+    CreateFaceBlendShapeInterface(GRAPH_PATH.c_str());
 
     cv::namedWindow("MediaPipeLibrary");
     cv::VideoCapture capture;
@@ -47,11 +40,11 @@ int main() {
         return -1;
     }
 
-    SetFaceMeshObserveCallback(LandmarkCallback);
+    SetFaceBlendShapeCallback(BlendShapeCallback);
 
-    ObserveFaceMesh();
+    ObserveFaceBlendShape();
 
-    StartFaceMesh();
+    StartFaceBlendShape();
 
     while (grab_frame) {
         capture >> camera_bgr_frame;
@@ -66,14 +59,13 @@ int main() {
         FaceMeshProcess(&camera_rgb_frame);
 
         if (camera_bgr_frame.cols > 0) {
-            for (int i = 0; i < landmark_lists_size; ++i) {
-                auto &landmark = landmark_lists[i];
-                cv::circle(camera_bgr_frame, cv::Point2f(landmark.x_, landmark.y_), 2, cv::Scalar(255, 0, 0));
+            for (int i = 0; i < blend_shape_size; ++i) {
+                std::cout << blend_shape_list[i] << " ";
             }
-            cv::imshow("MediaPipeLibrary", camera_bgr_frame);
+            std::cout << std::endl;
         }
         // delete[] landmark_lists;
-        landmark_lists_size = 0;
+        // blend_shape_size = 0;
         int pressed_key = cv::waitKey(30);
         if (pressed_key >= 0 && pressed_key != 255) grab_frame = false;
     }

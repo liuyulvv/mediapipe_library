@@ -2,7 +2,6 @@
 #define MEDIAPIPE_LIBRARY_H
 
 #include "mediapipe_api.h"
-#include "mediapipe_interface.h"
-#include "mediapipe_log.h"
+#include "mediapipe_struct.h"
 
 #endif
