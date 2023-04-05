@@ -115,6 +115,37 @@ void FaceMeshInterface::Observe() {
     }
 }
 
+void FaceMeshInterface::AddOutputStreamPoller() {
+    auto landmark_poller_or_status =  graph_.AddOutputStreamPoller("multi_face_landmarks");
+    auto presence_poller_or_status =  graph_.AddOutputStreamPoller("multi_landmarks_presence");
+    landmark_poller_ = std::make_shared<mediapipe::OutputStreamPoller>(std::move(landmark_poller_or_status.value()));
+    presence_poller_ = std::make_shared<mediapipe::OutputStreamPoller>(std::move(presence_poller_or_status.value()));
+}
+
+void FaceMeshInterface::GetOutput(NormalizedLandmark * normalized_landmark_list, size_t size) {
+    mediapipe::Packet packet;
+    if (presence_poller_ && presence_poller_->Next(&packet)) {
+        auto have_landmark = packet.Get<bool>();
+        if (have_landmark) {
+            if(landmark_poller_ && landmark_poller_->Next(&packet)) {
+                auto& multi_face_landmarks = packet.Get<std::vector<mediapipe::NormalizedLandmarkList>>();
+                // only one
+                for (const auto& face_landmarks : multi_face_landmarks) {
+                    assert(size == face_landmarks.landmark_size());
+                    for(int i = 0; i < size; ++i) {
+                        const auto& face_landmark = face_landmarks.landmark(i);
+                        normalized_landmark_list[i].x_ = face_landmark.x();
+                        normalized_landmark_list[i].y_ = face_landmark.y();
+                        normalized_landmark_list[i].z_ = face_landmark.z();
+                        normalized_landmark_list[i].visibility_ = face_landmark.visibility();
+                        normalized_landmark_list[i].presence_ = face_landmark.presence();
+                    }
+                }
+            }
+        }
+    }
+}
+
 void HandTrackInterface::SetObserveCallback(const landmark_callback& callback) {
     observe_callback_ = callback;
 }
@@ -145,6 +176,30 @@ void HandTrackInterface::Observe() {
     }
 }
 
+void HandTrackInterface::AddOutputStreamPoller() {
+    auto poller_or_status =  graph_.AddOutputStreamPoller("landmarks");
+    poller_ = std::make_shared<mediapipe::OutputStreamPoller>(std::move(poller_or_status.value()));
+}
+
+void HandTrackInterface::GetOutput(NormalizedLandmark * normalized_landmark_list, size_t size) {
+    mediapipe::Packet packet;
+    if(poller_ && poller_->Next(&packet)) {
+        auto& multi_face_landmarks = packet.Get<std::vector<mediapipe::NormalizedLandmarkList>>();
+        // only one
+        for (const auto& face_landmarks : multi_face_landmarks) {
+            assert(size = face_landmarks.landmark_size());
+            for(int i = 0; i < size; ++i) {
+                const auto& face_landmark = face_landmarks.landmark(i);
+                normalized_landmark_list[i].x_ = face_landmark.x();
+                normalized_landmark_list[i].y_ = face_landmark.y();
+                normalized_landmark_list[i].z_ = face_landmark.z();
+                normalized_landmark_list[i].visibility_ = face_landmark.visibility();
+                normalized_landmark_list[i].presence_ = face_landmark.presence();
+            }
+        }
+    }
+}
+
 void PoseTrackInterface::SetObserveCallback(const landmark_callback& callback) {
     observe_callback_ = callback;
 }
@@ -169,6 +224,30 @@ void PoseTrackInterface::Observe() {
     if (!status.ok()) {
         std::cout << status.ToString() << std::endl ;
         throw std::runtime_error(status.ToString());
+    }
+}
+
+void PoseTrackInterface::AddOutputStreamPoller() {
+    auto poller_or_status =  graph_.AddOutputStreamPoller("pose_landmarks");
+    poller_ = std::make_shared<mediapipe::OutputStreamPoller>(std::move(poller_or_status.value()));
+}
+
+void PoseTrackInterface::GetOutput(NormalizedLandmark * normalized_landmark_list, size_t size) {
+    mediapipe::Packet packet;
+    if(poller_ && poller_->Next(&packet)) {
+        auto& multi_face_landmarks = packet.Get<std::vector<mediapipe::NormalizedLandmarkList>>();
+        // only one
+        for (const auto& face_landmarks : multi_face_landmarks) {
+            assert(size = face_landmarks.landmark_size());
+            for(int i = 0; i < size; ++i) {
+                const auto& face_landmark = face_landmarks.landmark(i);
+                normalized_landmark_list[i].x_ = face_landmark.x();
+                normalized_landmark_list[i].y_ = face_landmark.y();
+                normalized_landmark_list[i].z_ = face_landmark.z();
+                normalized_landmark_list[i].visibility_ = face_landmark.visibility();
+                normalized_landmark_list[i].presence_ = face_landmark.presence();
+            }
+        }
     }
 }
 
@@ -302,3 +381,29 @@ void FaceBlendShapeInterface::Observe() {
         throw std::runtime_error(status.ToString());
     }
 }
+
+void FaceBlendShapeInterface::AddOutputStreamPoller() {
+    auto blend_shape_poller_or_status =  graph_.AddOutputStreamPoller("blendshapes");
+    auto presence_poller_or_status =  graph_.AddOutputStreamPoller("landmarks_presence");
+    poller_ = std::make_shared<mediapipe::OutputStreamPoller>(std::move(blend_shape_poller_or_status.value()));
+    presence_poller_ = std::make_shared<mediapipe::OutputStreamPoller>(std::move(presence_poller_or_status.value()));
+}
+
+void FaceBlendShapeInterface::GetOutput(float * blend_shape_list, size_t size) {
+    mediapipe::Packet packet;
+    if(presence_poller_ && presence_poller_->Next(&packet)) {
+        auto have = packet.Get<bool>();
+        if(have){
+            if(poller_ && poller_->Next(&packet)) {
+                auto& blend_shapes = packet.Get<mediapipe::ClassificationList>();
+                assert(size = blend_shapes.classification_size());
+                for(int i = 0; i< size; ++i) {
+                    const auto& blend_shape = blend_shapes.classification(i);
+                    blend_shape_list[i] = blend_shape.score();
+                }
+            }
+        }
+    }
+
+}
+

@@ -10,6 +10,7 @@ output_stream: "output_video"
 # Collection of detected/predicted hands, each represented as a list of
 # landmarks. (std::vector<NormalizedLandmarkList>)
 output_stream: "hand_landmarks"
+output_stream: "landmarks_presence"
 
 # Generates side packet cotaining max number of hands to detect/track.
 node {
@@ -45,4 +46,10 @@ node {
   input_stream: "NORM_RECTS:0:hand_rects_from_palm_detections"
   input_stream: "NORM_RECTS:1:hand_rects_from_landmarks"
   output_stream: "IMAGE:output_video"
+}
+
+node: {
+  calculator: "PacketPresenceCalculator"
+  input_stream: "PACKET:hand_landmarks"
+  output_stream: "PRESENCE:landmarks_presence"
 }

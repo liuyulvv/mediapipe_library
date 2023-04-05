@@ -43,8 +43,13 @@ public:
     void SetObserveCallback(const landmark_callback& callback);
     void Observe();
 
+    void AddOutputStreamPoller();
+    void GetOutput(NormalizedLandmark* normalized_landmark_list, size_t size);
+
 private:
     landmark_callback observe_callback_;
+    std::shared_ptr<mediapipe::OutputStreamPoller> landmark_poller_{nullptr};
+    std::shared_ptr<mediapipe::OutputStreamPoller> presence_poller_{nullptr};
 };
 
 class HandTrackInterface final : public MediapipeInterface {
@@ -54,9 +59,13 @@ public:
 
     void SetObserveCallback(const landmark_callback& callback);
     void Observe();
+    
+    void AddOutputStreamPoller();
+    void GetOutput(NormalizedLandmark* normalized_landmark_list, size_t size);
 
 private:
     landmark_callback observe_callback_;
+    std::shared_ptr<mediapipe::OutputStreamPoller> poller_{nullptr};
 };
 
 class PoseTrackInterface final : public MediapipeInterface {
@@ -67,8 +76,12 @@ public:
     void SetObserveCallback(const landmark_callback& callback);
     void Observe();
 
+    void AddOutputStreamPoller();
+    void GetOutput(NormalizedLandmark* normalized_landmark_list, size_t size);
+
 private:
     landmark_callback observe_callback_;
+    std::shared_ptr<mediapipe::OutputStreamPoller> poller_{nullptr};
 };
 
 class HolisticTrackInterface final : public MediapipeInterface {
@@ -79,11 +92,19 @@ public:
     void SetObserveCallback(const landmark_callback& callback, const HolisticCallbackType& type);
     void Observe();
 
+    // void AddOutputStreamPoller(const std::string& stream_name);
+    // void GetOutput(NormalizedLandmark* normalized_landmark_list, size_t* size);
+
 private:
     landmark_callback pose_callback_;
     landmark_callback face_callback_;
     landmark_callback left_hand_callback_;
     landmark_callback right_hand_callback_;
+
+    // mediapipe::OutputStreamPoller pose_poller_;
+    // mediapipe::OutputStreamPoller face_poller_;
+    // mediapipe::OutputStreamPoller left_hand_poller_;
+    // mediapipe::OutputStreamPoller right_hand_poller_;
 };
 
 class FaceBlendShapeInterface final : public MediapipeInterface {
@@ -94,8 +115,13 @@ public:
     void SetObserveCallback(const blend_shape_callback& callback);
     void Observe();
 
+    void AddOutputStreamPoller();
+    void GetOutput(float* blend_shape_list, size_t size);
+
 private:
     blend_shape_callback observe_callback_;
+    std::shared_ptr<mediapipe::OutputStreamPoller> poller_{nullptr};
+    std::shared_ptr<mediapipe::OutputStreamPoller> presence_poller_{nullptr};
 };
 
 #endif

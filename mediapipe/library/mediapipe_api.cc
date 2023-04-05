@@ -35,6 +35,14 @@ LibraryExport void ObserveFaceMesh() {
     face_mesh_interface->Observe();
 }
 
+LibraryExport void AddFaceMeshPoller() {
+    face_mesh_interface->AddOutputStreamPoller();
+}
+
+LibraryExport void GetFaceMeshOutput(NormalizedLandmark * normalized_landmark_list, size_t size) {
+    face_mesh_interface->GetOutput(normalized_landmark_list, size);
+}
+
 LibraryExport void StopFaceMesh() {
     face_mesh_interface->Stop();
 }
@@ -66,6 +74,14 @@ LibraryExport void ObserveHandTrack() {
     hand_track_interface->Observe();
 }
 
+LibraryExport void AddHandTrackPoller() {
+    hand_track_interface->AddOutputStreamPoller();
+}
+
+LibraryExport void GetHandTrackOutput(NormalizedLandmark * normalized_landmark_list, size_t size) {
+    hand_track_interface->GetOutput(normalized_landmark_list, size);
+}
+
 LibraryExport void StopHandTrack() {
     hand_track_interface->Stop();
 }
@@ -95,6 +111,14 @@ LibraryExport void SetPoseTrackObserveCallback(landmark_callback callback) {
 
 LibraryExport void ObservePoseTrack() {
     pose_track_interface->Observe();
+}
+
+LibraryExport void AddPoseTrackPoller() {
+    pose_track_interface->AddOutputStreamPoller();
+}
+
+LibraryExport void GetPoseTrackOutput(NormalizedLandmark * normalized_landmark_list, size_t size) {
+    pose_track_interface->GetOutput(normalized_landmark_list, size);
 }
 
 LibraryExport void StopPoseTrack() {
@@ -157,6 +181,14 @@ LibraryExport void SetFaceBlendShapeCallback(blend_shape_callback callback) {
 
 LibraryExport void ObserveFaceBlendShape() {
     face_blend_shape_interface->Observe();
+}
+
+LibraryExport void AddFaceBlendShapePoller() {
+    face_blend_shape_interface->AddOutputStreamPoller();
+}
+
+LibraryExport void GetFaceBlendShapeOutput(float * blend_shape_list, size_t size) {
+    face_blend_shape_interface->GetOutput(blend_shape_list, size);
 }
 
 LibraryExport void StopFaceBlendShape() {

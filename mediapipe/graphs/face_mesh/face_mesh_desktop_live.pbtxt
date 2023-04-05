@@ -8,6 +8,7 @@ output_stream: "output_video"
 # Collection of detected/processed faces, each represented as a list of
 # landmarks. (std::vector<NormalizedLandmarkList>)
 output_stream: "multi_face_landmarks"
+output_stream: "multi_landmarks_presence"
 
 # Throttles the images flowing downstream for flow control. It passes through
 # the very first incoming image unaltered, and waits for downstream nodes
@@ -63,4 +64,10 @@ node {
   input_stream: "NORM_RECTS:face_rects_from_landmarks"
   input_stream: "DETECTIONS:face_detections"
   output_stream: "IMAGE:output_video"
+}
+
+node: {
+  calculator: "PacketPresenceCalculator"
+  input_stream: "PACKET:multi_face_landmarks"
+  output_stream: "PRESENCE:multi_landmarks_presence"
 }
