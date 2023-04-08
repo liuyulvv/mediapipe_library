@@ -1,2 +1,7 @@
-bazel build -c dbg --define MEDIAPIPE_DISABLE_GPU=1 --action_env PYTHON_BIN_PATH="C://Program Files//Python//python.exe" mediapipe/library:libmediapipe.dll
-bazel build -c opt --define MEDIAPIPE_DISABLE_GPU=1 --action_env PYTHON_BIN_PATH="C://Program Files//Python//python.exe" mediapipe/library:libmediapipe.dll
+# windows
+bazel build -c dbg --define MEDIAPIPE_DISABLE_GPU=1 --action_env PYTHON_BIN_PATH="C://Program Files//Python//python.exe" mediapipe/library:mediapipe
+bazel build -c opt --define MEDIAPIPE_DISABLE_GPU=1 --action_env PYTHON_BIN_PATH="C://Program Files//Python//python.exe" mediapipe/library:mediapipe
+
+# macos or linux
+bazel build -c dbg --define MEDIAPIPE_DISABLE_GPU=1 mediapipe/library:mediapipe
+bazel build -c opt --define MEDIAPIPE_DISABLE_GPU=1 mediapipe/library:mediapipe
