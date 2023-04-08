@@ -15,9 +15,9 @@ struct Landmark {
 
 typedef Landmark NormalizedLandmark;
 
-typedef void (*landmark_callback)(NormalizedLandmark* normalized_landmark_list, size_t size);
+typedef void (*landmark_callback)(NormalizedLandmark* normalized_landmark_list, unsigned size);
 
-typedef void (*blend_shape_callback)(float* blend_shape, size_t size);
+typedef void (*blend_shape_callback)(float* blend_shape, unsigned size);
 
 enum HolisticCallbackType {
     POSE,

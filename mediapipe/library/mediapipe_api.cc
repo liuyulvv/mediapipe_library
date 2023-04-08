@@ -39,7 +39,7 @@ LibraryExport void AddFaceMeshPoller() {
     face_mesh_interface->AddOutputStreamPoller();
 }
 
-LibraryExport void GetFaceMeshOutput(NormalizedLandmark * normalized_landmark_list, size_t size) {
+LibraryExport void GetFaceMeshOutput(NormalizedLandmark * normalized_landmark_list, unsigned size) {
     face_mesh_interface->GetOutput(normalized_landmark_list, size);
 }
 
@@ -78,7 +78,7 @@ LibraryExport void AddHandTrackPoller() {
     hand_track_interface->AddOutputStreamPoller();
 }
 
-LibraryExport void GetHandTrackOutput(NormalizedLandmark * normalized_landmark_list, size_t size) {
+LibraryExport void GetHandTrackOutput(NormalizedLandmark * normalized_landmark_list, unsigned size) {
     hand_track_interface->GetOutput(normalized_landmark_list, size);
 }
 
@@ -117,7 +117,7 @@ LibraryExport void AddPoseTrackPoller() {
     pose_track_interface->AddOutputStreamPoller();
 }
 
-LibraryExport void GetPoseTrackOutput(NormalizedLandmark * normalized_landmark_list, size_t size) {
+LibraryExport void GetPoseTrackOutput(NormalizedLandmark * normalized_landmark_list, unsigned size) {
     pose_track_interface->GetOutput(normalized_landmark_list, size);
 }
 
@@ -187,7 +187,7 @@ LibraryExport void AddFaceBlendShapePoller() {
     face_blend_shape_interface->AddOutputStreamPoller();
 }
 
-LibraryExport void GetFaceBlendShapeOutput(float * blend_shape_list, size_t size) {
+LibraryExport void GetFaceBlendShapeOutput(float * blend_shape_list, unsigned size) {
     face_blend_shape_interface->GetOutput(blend_shape_list, size);
 }
 
